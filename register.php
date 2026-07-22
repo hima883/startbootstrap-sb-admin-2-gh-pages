@@ -1,7 +1,10 @@
 <?php
 
 include "helper/header.php";
-include 'helper/DB.php';
+include "helper/DB.php";
+
+$success = "";
+$error = "";
 
 if (isset($_POST['register'])) {
 
@@ -11,17 +14,33 @@ if (isset($_POST['register'])) {
     $password = $_POST['password'];
     $repeat_password = $_POST['repeat_password'];
 
-    if ($password != $repeat_password) {
+if ($password != $repeat_password) {
 
-        echo "Passwords do not match";
-        exit();
-    }
+    $error = "Passwords do not match.";
 
-    $user = $conn->query("INSERT INTO user (first_name, last_name, email, password)
-                         VALUES ('$first_name', '$last_name', '$email', '$password')");
+    } else {
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    $user = $conn->query("
+        INSERT INTO user(first_name,last_name,email,password)
+        VALUES('$first_name','$last_name','$email','$hashedPassword')
+    ");
+
+    if ($user) {
+    $success = "Registration completed successfully!";
+    header("Location: login.php");
+    exit();
+
+    } else {
+
+    $error = "Registration failed!";
 
 }
 
+}
+
+}
 ?>
 
 <body class="bg-gradient-primary">
@@ -38,6 +57,16 @@ if (isset($_POST['register'])) {
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
+                            <?php if (!empty($success)) { ?>
+                                <div class="alert alert-success" role="alert">
+                                    <?php echo $success; ?>
+                                </div>
+                            <?php } ?>
+                            <?php if (!empty($error)) { ?>
+                                <div class="alert alert-danger" role="alert">
+                                    <?php echo $error; ?>
+                                </div>
+                            <?php } ?>
                             <form class="user" method="POST">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
@@ -90,7 +119,7 @@ if (isset($_POST['register'])) {
                                 <a class="small" href="forgot-password.html">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="login.html">Already have an account? Login!</a>
+                                <a class="small" href="login.php">Already have an account? Login!</a>
                             </div>
                         </div>
                     </div>
