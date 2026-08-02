@@ -14,19 +14,27 @@ if (isset($_POST['login'])) {
     $user = $conn->query("
         SELECT * FROM user
         WHERE email='$email'
-        ");
+    ");
 
     if ($user->num_rows > 0) {
 
         $row = $user->fetch_assoc();
-        if(password_verify($password, $row['password'])){
-        $_SESSION['user'] = $email;
-        $success = "Login successful!";
-        header("Location: index.php");
-        exit();
+        
+        
+
+        if (password_verify($password, $row['password'])) {
+
+            $_SESSION['user'] = $email;
+
+            header("Location: index.php");
+            exit();
+
         } else {
+
             $error = "Invalid email or password.";
+
         }
+
     } else {
 
         $error = "Invalid email or password.";

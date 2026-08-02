@@ -1,6 +1,6 @@
 <?php
 
-include "helper/header.php";
+
 include "helper/DB.php";
 
 $success = "";
@@ -41,6 +41,7 @@ if ($password != $repeat_password) {
 }
 
 }
+include "helper/header.php";
 ?>
 
 <body class="bg-gradient-primary">
